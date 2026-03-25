@@ -1,63 +1,59 @@
-import Image from "next/image";
-
 export default function Home() {
+  const posts = [
+    {
+      id: 1,
+      title: "Next.js 시작하기",
+      category: "개발",
+      date: "2024.03.25",
+      excerpt: "Next.js 13 App Router를 활용하여 모던 웹 애플리케이션을 만드는 방법을 알아봅시다.",
+    },
+    {
+      id: 2,
+      title: "Tailwind CSS 디자인 팁",
+      category: "디자인",
+      date: "2024.03.24",
+      excerpt: "Tailwind CSS를 효과적으로 사용하여 반응형 디자인을 구현하는 방법.",
+    },
+    {
+      id: 3,
+      title: "React 상태 관리 패턴",
+      category: "개발",
+      date: "2024.03.23",
+      excerpt: "React에서 효율적인 상태 관리를 위한 다양한 패턴과 Best Practice.",
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-3xl mx-auto px-6 py-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">홍세온</h1>
+          <p className="text-gray-600">한신대 공공인재빅데이터학과 | 프로그래밍, 독서, 영화감상</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-3xl mx-auto px-6 py-12">
+        <div className="space-y-8">
+          {posts.map((post) => (
+            <article
+              key={post.id}
+              className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <h2 className="text-2xl font-bold text-gray-900 flex-1">{post.title}</h2>
+                <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full ml-4 whitespace-nowrap">
+                  {post.category}
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">{post.date}</p>
+              <p className="text-gray-700 leading-relaxed">{post.excerpt}</p>
+              <a href="#" className="inline-block mt-4 text-blue-600 font-semibold hover:text-blue-800">
+                Read More →
+              </a>
+            </article>
+          ))}
         </div>
       </main>
     </div>
