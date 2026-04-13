@@ -7,10 +7,34 @@ export default function Page() {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [error, setError] = useState('')
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    alert('저장되었습니다')
+    setError('')
+
+    if (title.trim() === '') {
+      setError('제목을 입력하세요')
+      return
+    }
+
+    const newPost = {
+      id: Date.now(),
+      title: title.trim(),
+      content: content.trim(),
+      author: '익명',
+      date: new Date().toISOString().slice(0, 10),
+    }
+
+    try {
+      const raw = localStorage.getItem('posts')
+      const existing = raw ? JSON.parse(raw) : null
+      const merged = existing && Array.isArray(existing) ? [newPost, ...existing] : [newPost]
+      localStorage.setItem('posts', JSON.stringify(merged))
+    } catch (err) {
+      console.error('localStorage error', err)
+    }
+
     router.push('/posts')
   }
 
