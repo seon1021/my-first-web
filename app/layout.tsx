@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from './components/Nav'
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "내 블로그",
@@ -13,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={cn("font-sans", geist.variable)}>
       <body>
         <Nav />
         <main className="max-w-4xl mx-auto p-6">
