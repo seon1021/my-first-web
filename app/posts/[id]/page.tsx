@@ -3,6 +3,7 @@ import { getPost } from '../../../lib/posts'
 import PostDetailHeader from '../../components/PostDetailHeader'
 import PostContent from '../../components/PostContent'
 import PostSidebar from '../../components/PostSidebar'
+import CommentSection from '../../components/CommentSection'
 
 export default async function Page({ params }: { params: any }) {
   const { id } = await params
@@ -32,6 +33,9 @@ export default async function Page({ params }: { params: any }) {
         {/* 본문 영역 (2/3) */}
         <div className="md:col-span-2">
           <PostContent content={post.content} />
+          
+          {/* 댓글 영역 */}
+          <CommentSection postId={post.id} />
         </div>
 
         {/* 사이드바 (1/3) */}

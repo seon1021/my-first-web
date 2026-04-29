@@ -28,6 +28,24 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 /**
+ * 특정 사용자의 포스트 조회 (내림차순)
+ */
+export async function getPostsByUser(userId: string): Promise<Post[]> {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('getPostsByUser error:', error)
+    return []
+  }
+
+  return data || []
+}
+
+/**
  * 특정 ID 포스트 조회
  */
 export async function getPost(id: number): Promise<Post | null> {

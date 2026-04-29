@@ -5,163 +5,193 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
-    /* 기본 배경 & 텍스트 (밝고 선명함) */
-    --background: oklch(0.99 0 0);           /* 거의 흰색 배경 */
-    --foreground: oklch(0.15 0 0);           /* 거의 검정색 텍스트 */
-    
-    /* 카드 (밝고 깔끔함) */
-    --card: oklch(1 0 0);                    /* 순백색 */
-    --card-foreground: oklch(0.15 0 0);      /* 검정색 */
-    
-    /* 팝오버 (카드와 동일) */
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.15 0 0);
-    
-    /* 주요 색상 (차분한 파란색) */
-    --primary: oklch(0.35 0.1 240);          /* 차분한 파란색 */
-    --primary-foreground: oklch(0.99 0 0);   /* 흰색 텍스트 */
-    
-    /* 보조 색상 (밝은 회색) */
-    --secondary: oklch(0.95 0 0);            /* 매우 밝은 회색 */
-    --secondary-foreground: oklch(0.25 0 0); /* 어두운 회색 */
-    
-    /* 음소거 색상 (읽기 편함) */
-    --muted: oklch(0.93 0 0);                /* 밝은 회색 */
-    --muted-foreground: oklch(0.5 0 0);      /* 중간 회색 */
-    
-    /* 악센트 (부드러운 색상) */
-    --accent: oklch(0.93 0 0);               /* 밝은 배경 */
-    --accent-foreground: oklch(0.25 0 0);    /* 어두운 텍스트 */
-    
-    /* 삭제 버튼 (빨강) */
-    --destructive: oklch(0.577 0.245 27.325);
-    
-    /* 테두리 & 입력 필드 (미묘함) */
-    --border: oklch(0.93 0 0);               /* 밝은 회색 테두리 */
-    --input: oklch(0.96 0 0);                /* 거의 흰색 입력 필드 */
-    --ring: oklch(0.35 0.1 240);             /* primary와 동일 */
-    
-    /* 차트 색상 (그래프용) */
-    --chart-1: oklch(0.35 0.1 240);
-    --chart-2: oklch(0.55 0.15 200);
-    --chart-3: oklch(0.65 0.1 160);
-    --chart-4: oklch(0.75 0.08 120);
-    --chart-5: oklch(0.85 0.05 80);
-    
-    /* 사이드바 (다크 모드용) */
-    --sidebar: oklch(0.99 0 0);
-    --sidebar-foreground: oklch(0.15 0 0);
-    --sidebar-primary: oklch(0.35 0.1 240);
-    --sidebar-primary-foreground: oklch(0.99 0 0);
-    --sidebar-accent: oklch(0.93 0 0);
-    --sidebar-accent-foreground: oklch(0.25 0 0);
-    --sidebar-border: oklch(0.93 0 0);
-    --sidebar-ring: oklch(0.35 0.1 240);
-    
-    /* 모서리 반경 (부드럽지만 강하지 않음) */
-    --radius: 0.5rem;
+  /* 기본 배경 & 텍스트 (밝고 선명함) */
+  --background: oklch(0.99 0 0);
+  /* 거의 흰색 배경 */
+  --foreground: oklch(0.15 0 0);
+  /* 거의 검정색 텍스트 */
+
+  /* 카드 (밝고 깔끔함) */
+  --card: oklch(1 0 0);
+  /* 순백색 */
+  --card-foreground: oklch(0.15 0 0);
+  /* 검정색 */
+
+  /* 팝오버 (카드와 동일) */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
+
+  /* 주요 색상 (차분한 파란색) */
+  --primary: oklch(0.6 0.2 340);
+  /* 차분한 파란색 */
+  --primary-foreground: oklch(0.99 0 0);
+  /* 흰색 텍스트 */
+
+  /* 보조 색상 (밝은 회색) */
+  --secondary: oklch(0.95 0 0);
+  /* 매우 밝은 회색 */
+  --secondary-foreground: oklch(0.25 0 0);
+  /* 어두운 회색 */
+
+  /* 음소거 색상 (읽기 편함) */
+  --muted: oklch(0.93 0 0);
+  /* 밝은 회색 */
+  --muted-foreground: oklch(0.5 0 0);
+  /* 중간 회색 */
+
+  /* 악센트 (부드러운 색상) */
+  --accent: oklch(0.93 0 0);
+  /* 밝은 배경 */
+  --accent-foreground: oklch(0.25 0 0);
+  /* 어두운 텍스트 */
+
+  /* 삭제 버튼 (빨강) */
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* 테두리 & 입력 필드 (미묘함) */
+  --border: oklch(0.93 0 0);
+  /* 밝은 회색 테두리 */
+  --input: oklch(0.96 0 0);
+  /* 거의 흰색 입력 필드 */
+  --ring: oklch(0.6 0.2 340);
+  /* primary와 동일 */
+
+  /* 차트 색상 (그래프용) */
+  --chart-1: oklch(0.35 0.1 240);
+  --chart-2: oklch(0.55 0.15 200);
+  --chart-3: oklch(0.65 0.1 160);
+  --chart-4: oklch(0.75 0.08 120);
+  --chart-5: oklch(0.85 0.05 80);
+
+  /* 사이드바 (다크 모드용) */
+  --sidebar: oklch(0.99 0 0);
+  --sidebar-foreground: oklch(0.15 0 0);
+  --sidebar-primary: oklch(0.6 0.2 340);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.93 0 0);
+  --sidebar-accent-foreground: oklch(0.25 0 0);
+  --sidebar-border: oklch(0.93 0 0);
+  --sidebar-ring: oklch(0.6 0.2 340);
+
+  /* 모서리 반경 (부드럽지만 강하지 않음) */
+  --radius: 0.5rem;
 }
 
 .dark {
-    /* 다크 모드 배경 & 텍스트 */
-    --background: oklch(0.15 0 0);           /* 어두운 배경 */
-    --foreground: oklch(0.95 0 0);           /* 밝은 텍스트 */
-    
-    /* 카드 (다크 배경에서 밝게) */
-    --card: oklch(0.2 0 0);                  /* 짙은 회색 */
-    --card-foreground: oklch(0.95 0 0);      /* 밝은 텍스트 */
-    
-    /* 팝오버 */
-    --popover: oklch(0.2 0 0);
-    --popover-foreground: oklch(0.95 0 0);
-    
-    /* 주요 색상 (밝은 파란색) */
-    --primary: oklch(0.65 0.1 240);          /* 밝은 파란색 */
-    --primary-foreground: oklch(0.15 0 0);   /* 어두운 텍스트 */
-    
-    /* 보조 색상 */
-    --secondary: oklch(0.25 0 0);            /* 짙은 회색 */
-    --secondary-foreground: oklch(0.95 0 0); /* 밝은 텍스트 */
-    
-    /* 음소거 색상 */
-    --muted: oklch(0.25 0 0);                /* 짙은 회색 */
-    --muted-foreground: oklch(0.65 0 0);     /* 중간 밝은 회색 */
-    
-    /* 악센트 */
-    --accent: oklch(0.25 0 0);               /* 짙은 배경 */
-    --accent-foreground: oklch(0.95 0 0);    /* 밝은 텍스트 */
-    
-    /* 삭제 버튼 (다크 모드용 빨강) */
-    --destructive: oklch(0.704 0.191 22.216);
-    
-    /* 테두리 & 입력 필드 */
-    --border: oklch(0.3 0 0);                /* 어두운 테두리 */
-    --input: oklch(0.2 0 0);                 /* 어두운 입력 필드 */
-    --ring: oklch(0.65 0.1 240);             /* primary와 동일 */
-    
-    /* 사이드바 (다크 모드) */
-    --sidebar: oklch(0.15 0 0);
-    --sidebar-foreground: oklch(0.95 0 0);
-    --sidebar-primary: oklch(0.65 0.1 240);
-    --sidebar-primary-foreground: oklch(0.15 0 0);
-    --sidebar-accent: oklch(0.25 0 0);
-    --sidebar-accent-foreground: oklch(0.95 0 0);
-    --sidebar-border: oklch(0.3 0 0);
-    --sidebar-ring: oklch(0.65 0.1 240);
+  /* 다크 모드 배경 & 텍스트 */
+  --background: oklch(0.15 0 0);
+  /* 어두운 배경 */
+  --foreground: oklch(0.95 0 0);
+  /* 밝은 텍스트 */
+
+  /* 카드 (다크 배경에서 밝게) */
+  --card: oklch(0.2 0 0);
+  /* 짙은 회색 */
+  --card-foreground: oklch(0.95 0 0);
+  /* 밝은 텍스트 */
+
+  /* 팝오버 */
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.95 0 0);
+
+  /* 주요 색상 (밝은 파란색) */
+  --primary: oklch(0.6 0.2 340);
+  /* 밝은 파란색 */
+  --primary-foreground: oklch(0.15 0 0);
+  /* 어두운 텍스트 */
+
+  /* 보조 색상 */
+  --secondary: oklch(0.25 0 0);
+  /* 짙은 회색 */
+  --secondary-foreground: oklch(0.95 0 0);
+  /* 밝은 텍스트 */
+
+  /* 음소거 색상 */
+  --muted: oklch(0.25 0 0);
+  /* 짙은 회색 */
+  --muted-foreground: oklch(0.65 0 0);
+  /* 중간 밝은 회색 */
+
+  /* 악센트 */
+  --accent: oklch(0.25 0 0);
+  /* 짙은 배경 */
+  --accent-foreground: oklch(0.95 0 0);
+  /* 밝은 텍스트 */
+
+  /* 삭제 버튼 (다크 모드용 빨강) */
+  --destructive: oklch(0.704 0.191 22.216);
+
+  /* 테두리 & 입력 필드 */
+  --border: oklch(0.3 0 0);
+  /* 어두운 테두리 */
+  --input: oklch(0.2 0 0);
+  /* 어두운 입력 필드 */
+  --ring: oklch(0.6 0.2 340);
+  /* primary와 동일 */
+
+  /* 사이드바 (다크 모드) */
+  --sidebar: oklch(0.15 0 0);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.6 0.2 340);
+  --sidebar-primary-foreground: oklch(0.15 0 0);
+  --sidebar-accent: oklch(0.25 0 0);
+  --sidebar-accent-foreground: oklch(0.95 0 0);
+  --sidebar-border: oklch(0.3 0 0);
+  --sidebar-ring: oklch(0.6 0.2 340);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   body {
     @apply bg-background text-foreground;
   }
-  
+
   html {
     @apply font-sans;
   }
@@ -187,7 +217,12 @@
     @apply text-base leading-7;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold tracking-tight;
   }
 }

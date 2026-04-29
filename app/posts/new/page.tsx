@@ -1,15 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createPost } from '../../../lib/posts'
+import { useAuth } from '../../components/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Page() {
   const router = useRouter()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
@@ -17,6 +19,13 @@ export default function Page() {
     content: '',
     author: '',
   })
+
+  // 로그인 사용자의 이메일을 작성자 기본값으로 설정
+  useEffect(() => {
+    if (user?.email && !formData.author) {
+      setFormData((prev) => ({ ...prev, author: user.email!.split('@')[0] }))
+    }
+  }, [user])
 
   // 모든 입력값 변경을 하나의 함수로 처리합니다.
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -36,11 +45,14 @@ export default function Page() {
       setLoading(true)
       setError('')
 
-      const newPost = await createPost({
-        title: formData.title,
-        content: formData.content,
-        author: formData.author,
-      })
+      const newPost = await createPost(
+        {
+          title: formData.title,
+          content: formData.content,
+          author: formData.author,
+        },
+        user?.id
+      )
 
       if (newPost) {
         router.push(`/posts/${newPost.id}`)
