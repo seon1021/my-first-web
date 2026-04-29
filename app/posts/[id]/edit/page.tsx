@@ -1,24 +1,51 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createPost } from '../../../lib/posts'
+import { getPost, updatePost } from '../../../../lib/posts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default function Page() {
+export default function Page({ params }: { params: any }) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [postId, setPostId] = useState<number | null>(null)
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     author: '',
   })
 
-  // 모든 입력값 변경을 하나의 함수로 처리합니다.
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const { id } = await params
+        const numId = Number(id)
+        setPostId(numId)
+
+        const post = await getPost(numId)
+        if (post) {
+          setFormData({
+            title: post.title,
+            content: post.content,
+            author: post.author,
+          })
+        } else {
+          setError('포스트를 찾을 수 없습니다.')
+        }
+      } catch (err) {
+        console.error('포스트 로드 오류:', err)
+        setError('포스트 로드 중 오류가 발생했습니다.')
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [params])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -32,32 +59,45 @@ export default function Page() {
       return
     }
 
+    if (!postId) {
+      setError('포스트 ID를 찾을 수 없습니다.')
+      return
+    }
+
     try {
-      setLoading(true)
+      setSaving(true)
       setError('')
 
-      const newPost = await createPost({
+      const updated = await updatePost(postId, {
         title: formData.title,
         content: formData.content,
         author: formData.author,
       })
 
-      if (newPost) {
-        router.push(`/posts/${newPost.id}`)
+      if (updated) {
+        router.push(`/posts/${postId}`)
       } else {
-        setError('포스트 생성에 실패했습니다.')
+        setError('포스트 수정에 실패했습니다.')
       }
     } catch (err) {
-      console.error('포스트 생성 오류:', err)
-      setError('포스트 생성 중 오류가 발생했습니다.')
+      console.error('포스트 수정 오류:', err)
+      setError('포스트 수정 중 오류가 발생했습니다.')
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto py-12 px-4">
+        <p className="text-center text-gray-500">로딩 중...</p>
+      </div>
+    )
   }
 
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-8">새 포스트 작성</h1>
+      <h1 className="text-3xl font-bold mb-8">포스트 수정</h1>
 
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-700">
@@ -71,7 +111,6 @@ export default function Page() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 제목 입력 */}
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                 제목 *
@@ -82,13 +121,10 @@ export default function Page() {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="포스트 제목을 입력하세요"
-                disabled={loading}
-                required
+                disabled={saving}
               />
             </div>
 
-            {/* 작성자 입력 */}
             <div>
               <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-2">
                 작성자 *
@@ -99,13 +135,10 @@ export default function Page() {
                 name="author"
                 value={formData.author}
                 onChange={handleChange}
-                placeholder="작성자 이름을 입력하세요"
-                disabled={loading}
-                required
+                disabled={saving}
               />
             </div>
 
-            {/* 내용 입력 */}
             <div>
               <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
                 내용 *
@@ -115,20 +148,17 @@ export default function Page() {
                 name="content"
                 value={formData.content}
                 onChange={handleChange}
-                placeholder="포스트 내용을 입력하세요"
                 rows={10}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={loading}
-                required
+                disabled={saving}
               />
             </div>
 
-            {/* 버튼 영역 */}
             <div className="flex gap-4">
-              <Button type="submit" disabled={loading}>
-                {loading ? '작성 중...' : '포스트 작성'}
+              <Button type="submit" disabled={saving}>
+                {saving ? '저장 중...' : '포스트 수정'}
               </Button>
-              <Link href="/posts">
+              <Link href={`/posts/${postId}`}>
                 <Button type="button" variant="outline">
                   취소
                 </Button>

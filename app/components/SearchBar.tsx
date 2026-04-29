@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
+import { Input } from '@/components/ui/input'
 import type { Post } from '../../lib/posts'
 
 type Props = {
@@ -30,12 +31,12 @@ export default function SearchBar({ items, onFilter }: Props) {
   }, [q, items, onFilter])
 
   return (
-    <div className="mb-6">
-      <input
+    <div>
+      <Input
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="검색어로 제목·내용·작성자를 검색하세요"
-        className="w-full px-3 py-2 border rounded shadow-sm"
+        className="w-full"
       />
     </div>
   )

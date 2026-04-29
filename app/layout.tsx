@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Nav from './components/Nav'
+import Footer from './components/Footer'
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
@@ -18,14 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={cn("font-sans", geist.variable)}>
-      <body>
+      <body className="bg-white min-h-screen flex flex-col">
         <Nav />
-        <main className="max-w-4xl mx-auto p-6">
+        <main className="flex-1 max-w-4xl mx-auto w-full">
           {children}
         </main>
-        <footer className="text-center text-gray-500 py-4">
-          © 2026 내 블로그
-        </footer>
+        <Footer />
       </body>
     </html>
   );
