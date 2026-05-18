@@ -1,11 +1,15 @@
+"use client"
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useAuth } from './AuthProvider'
 
 interface PostDetailHeaderProps {
   postId: number
   title: string
   author: string
   createdAt: string | undefined
+  userId?: string | null
 }
 
 /**
@@ -17,11 +21,16 @@ export default function PostDetailHeader({
   title,
   author,
   createdAt,
+  userId,
 }: PostDetailHeaderProps) {
+  const { user } = useAuth()
+
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return '날짜 없음'
     return new Date(dateString).toLocaleDateString('ko-KR')
   }
+
+  const canEdit = !!user && user.id === userId
 
   return (
     <div className="border-b pb-6 mb-6">
@@ -32,11 +41,13 @@ export default function PostDetailHeader({
             코드
           </Button>
         </Link>
-        <Link href={`/posts/${postId}/edit`}>
-          <Button size="sm" variant="outline">
-            메모
-          </Button>
-        </Link>
+        {canEdit && (
+          <Link href={`/posts/${postId}/edit`}>
+            <Button size="sm" variant="outline">
+              메모
+            </Button>
+          </Link>
+        )}
         <Button size="sm" variant="outline">
           공유
         </Button>

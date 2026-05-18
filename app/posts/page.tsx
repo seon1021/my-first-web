@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useAuth } from '../components/AuthProvider'
 import { getPosts, deletePost as deletePostApi, type Post } from '../../lib/posts'
 import SearchBar from '../components/SearchBar'
 import PostCard from '../components/PostCard'
@@ -20,6 +21,7 @@ export default function PostsPage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const { user } = useAuth()
 
   useEffect(() => {
     loadPosts()
@@ -102,20 +104,23 @@ export default function PostsPage() {
                 <PostCard post={post} />
 
                 {/* 관리 버튼 - 모바일에서도 터치 가능하도록 배치 */}
-                <div className="absolute top-4 right-4 flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                  <Link href={`/posts/${post.id}/edit`}>
-                    <Button size="sm" variant="outline">
-                      수정
+                {/** Show edit/delete only to the post author */}
+                {user && user.id === post.user_id && (
+                  <div className="absolute top-4 right-4 flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                    <Link href={`/posts/${post.id}/edit`}>
+                      <Button size="sm" variant="outline">
+                        수정
+                      </Button>
+                    </Link>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => openDeleteDialog(post.id)}
+                    >
+                      삭제
                     </Button>
-                  </Link>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => openDeleteDialog(post.id)}
-                  >
-                    삭제
-                  </Button>
-                </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

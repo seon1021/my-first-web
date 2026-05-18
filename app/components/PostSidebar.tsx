@@ -12,9 +12,11 @@ import {
 } from '@/components/ui/dialog'
 import { deletePost as deletePostApi } from '@/lib/posts'
 import { useRouter } from 'next/navigation'
+import { useAuth } from './AuthProvider'
 
 interface PostSidebarProps {
   postId: number
+  postUserId?: string | null
 }
 
 /**
@@ -22,8 +24,9 @@ interface PostSidebarProps {
  * 수정/삭제 버튼 및 액션 메뉴
  * Dialog를 이용한 삭제 확인
  */
-export default function PostSidebar({ postId }: PostSidebarProps) {
+export default function PostSidebar({ postId, postUserId }: PostSidebarProps) {
   const router = useRouter()
+  const { user } = useAuth()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -52,21 +55,25 @@ export default function PostSidebar({ postId }: PostSidebarProps) {
             </Button>
           </Link>
 
-          {/* 수정하기 */}
-          <Link href={`/posts/${postId}/edit`} className="block">
-            <Button variant="outline" className="w-full">
-              수정하기
-            </Button>
-          </Link>
+          {/* 수정/삭제: 작성자만 보이도록 */}
+          {user && postUserId && user.id === postUserId && (
+            <>
+              <Link href={`/posts/${postId}/edit`} className="block">
+                <Button variant="outline" className="w-full">
+                  수정하기
+                </Button>
+              </Link>
 
-          {/* 삭제하기 */}
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={() => setShowDeleteDialog(true)}
-          >
-            삭제하기
-          </Button>
+              {/* 삭제하기 */}
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                삭제하기
+              </Button>
+            </>
+          )}
 
           {/* 구분선 */}
           <div className="border-t pt-4"></div>

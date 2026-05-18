@@ -26,6 +26,7 @@ export default async function Page({ params }: { params: any }) {
         title={post.title}
         author={post.author}
         createdAt={post.created_at}
+        userId={post.user_id ?? null}
       />
 
       {/* 콘텐츠 + 사이드바 */}
@@ -40,7 +41,7 @@ export default async function Page({ params }: { params: any }) {
 
         {/* 사이드바 (1/3) */}
         <div className="md:col-span-1">
-          <PostSidebar postId={post.id} />
+          <PostSidebar postId={post.id} postUserId={post.user_id ?? null} />
         </div>
       </div>
     </article>
