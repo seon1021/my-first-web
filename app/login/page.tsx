@@ -44,10 +44,15 @@ export default function LoginPage() {
         router.push('/posts')
       }
     } catch (err) {
+      console.error('login error catch:', err)
       if (err instanceof Error) {
         setError(err.message)
       } else {
-        setError('오류가 발생했습니다.')
+        try {
+          setError(JSON.stringify(err))
+        } catch (e) {
+          setError('오류가 발생했습니다.')
+        }
       }
     } finally {
       setLoading(false)

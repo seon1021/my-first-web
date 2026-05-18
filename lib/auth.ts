@@ -4,12 +4,17 @@ import { supabase } from './supabase'
  * 회원가입
  */
 export async function signUp(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  })
+  const { data, error } = await supabase.auth.signUp({ email, password })
+
+  // 자세한 디버그 정보 출력
+  try {
+    console.debug('signUp response:', JSON.stringify({ data, error }, null, 2))
+  } catch (e) {
+    console.debug('signUp response (non-serializable):', { data, error })
+  }
 
   if (error) {
+    console.error('signUp error:', error)
     throw new Error(error.message)
   }
 
@@ -20,12 +25,17 @@ export async function signUp(email: string, password: string) {
  * 로그인
  */
 export async function signIn(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+  // 자세한 디버그 정보 출력
+  try {
+    console.debug('signIn response:', JSON.stringify({ data, error }, null, 2))
+  } catch (e) {
+    console.debug('signIn response (non-serializable):', { data, error })
+  }
 
   if (error) {
+    console.error('signIn error:', error)
     throw new Error(error.message)
   }
 

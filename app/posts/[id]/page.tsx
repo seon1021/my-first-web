@@ -6,7 +6,7 @@ import PostSidebar from '../../components/PostSidebar'
 import CommentSection from '../../components/CommentSection'
 
 export default async function Page({ params }: { params: any }) {
-  const { id } = params
+  const { id } = await params
   const post = await getPost(Number(id))
 
   if (!post) {
