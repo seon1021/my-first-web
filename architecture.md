@@ -216,16 +216,47 @@ auth.users (1)  ──→  (N) posts
 - 1명의 사용자 → 여러 글 작성 가능 (1:N)
 - 글 삭제 시 user_id가 CASCADE DELETE 됨
 - 공개/비공개 설정 없음 (모든 글 공개)
+
+---
+
+## 6. 보안 계층 (Security)
+
+- **원칙**: UI에서의 분기(버튼 숨김, 링크 비표시)는 UX/편의성일 뿐 보안이 아니다. 실제 권한 강제는 데이터베이스 레벨의 RLS(Row Level Security)로 수행한다.
+- **계층 구분**:
+  - 프론트엔드(UI): 사용자 경험(버튼/메뉴 노출), 빠른 피드백
+  - 애플리케이션 로직: 입력 유효성, UX 기반 추가 체크(예: 폼 검증)
+  - 데이터베이스(RLS): 최종 권한 검증 및 강제 — 신뢰 가능한 보안 계층
+
+### 보호 정책 목록 (posts 테이블)
+
+- SELECT: 누구나 읽기 허용 (`USING (true)`) — 공개 읽기
+- INSERT: 인증된 사용자만 가능, 삽입되는 `user_id`는 `auth.uid()`와 일치해야 함 (`WITH CHECK (auth.uid() = user_id)`)
+- UPDATE: 작성자 본인만 (`USING (auth.uid() = user_id)` + `WITH CHECK (auth.uid() = user_id)`) — 기존 행과 업데이트 결과 모두 검증
+- DELETE: 작성자 본인만 (`USING (auth.uid() = user_id)`)
+
+### 운영 규칙
+
+- RLS SQL은 반드시 `supabase/migrations/*`에 마이그레이션 파일로 남기고 Git에 커밋한다.
+- `service_role` 또는 서버 전용 키는 클라이언트 코드(브라우저/앱)에 절대 포함하지 않는다.
+- 보안 관련 변경 후에는 다른 계정으로 우회 테스트(익명, 사용자 A, 사용자 B)를 수행해 검증한다.
 ```
 
-### 4.3 Row Level Security (RLS) 정책
+### 4.3 Row Level Security (RLS) 정책 (Ch11 기준)
+
+- 원칙: RLS는 데이터베이스 수준의 보안이다. 클라이언트 UI 분기(버튼 숨김 등)는 UX일 뿐 실제 보안이 아니다.
+- RLS 정책은 Supabase CLI 마이그레이션으로 관리한다. 대시보드 SQL Editor에서 직접 실행하지 말고, 마이그레이션 파일로 기록하여 Git에 남긴다.
 
 | 작업 | 정책 | 조건 |
 |------|------|------|
-| **SELECT** | 모두 읽기 | 모든 사용자 가능 |
-| **INSERT** | 인증 필수 | 로그인한 사용자만, 자신의 user_id로만 작성 |
-| **UPDATE** | 작성자만 | 로그인한 사용자 = 글 작성자 |
-| **DELETE** | 작성자만 | 로그인한 사용자 = 글 작성자 |
+| **SELECT** | 모두 읽기 | 모든 사용자 허용 (USING (true)) |
+| **INSERT** | 인증 필수 + user_id 고정 | `WITH CHECK (auth.uid() = user_id)` — 삽입되는 `user_id`는 `auth.uid()`와 일치해야 함 |
+| **UPDATE** | 작성자만 | `USING (auth.uid() = user_id)` + `WITH CHECK (auth.uid() = user_id)` — 기존 행과 변경 결과 모두 검사 |
+| **DELETE** | 작성자만 | `USING (auth.uid() = user_id)` |
+
+- 핵심 포인트:
+  - `auth.uid()`를 기준으로 `posts.user_id`와 일치하는지 검증해야 한다.
+  - RLS SQL은 반드시 `supabase/migrations/<timestamp>_*.sql`에 남겨 재현 가능하도록 한다.
+  - `service_role` 또는 서버 전용 키는 절대 클라이언트 코드에서 사용하지 않는다.
 
 ### 4.4 TypeScript 타입 정의
 

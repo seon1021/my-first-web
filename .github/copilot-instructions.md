@@ -142,3 +142,9 @@
 - Do not create `pages/` router files; this project uses the App Router.
 - Do not add `"use client"` unless interactivity or browser APIs are actually needed.
 
+## Security Guidelines (Supabase / RLS)
+
+- 보안은 클라이언트의 `if` 분기만으로 처리하지 말고, 데이터베이스의 RLS로 강제합니다. UI는 UX용으로만 사용하세요.
+- RLS SQL은 대시보드에서 직접 실행하지 말고 `supabase/migrations/*.sql` 마이그레이션 파일로 남겨 관리하세요.
+- `service_role` 또는 서버 전용 키는 클라이언트 코드에 절대 포함하지 마세요. 민감 키는 서버 전용 환경에서만 사용합니다.
+
