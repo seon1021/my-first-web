@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createPost } from '../../../lib/posts'
+import { MESSAGES, serverErrorToUserMessage } from '../../../lib/messages'
 import { useAuth } from '../../components/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +15,7 @@ export default function Page() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<{ title?: string; content?: string; author?: string }>({})
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -36,14 +38,29 @@ export default function Page() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.title.trim() || !formData.content.trim() || !formData.author.trim()) {
-      setError('모든 필드를 입력해주세요.')
+    if (loading) return
+
+
+    // 클라이언트 유효성 검사
+    const errors: { title?: string; content?: string; author?: string } = {}
+    if (!formData.title.trim()) errors.title = MESSAGES.TITLE_MISSING
+    else if (formData.title.trim().length < 2) errors.title = MESSAGES.TITLE_TOO_SHORT
+
+    if (!formData.content.trim()) errors.content = MESSAGES.CONTENT_MISSING
+    else if (formData.content.trim().length < 10) errors.content = MESSAGES.CONTENT_TOO_SHORT
+
+    if (!formData.author.trim()) errors.author = '작성자를 입력해주세요.'
+
+    setFieldErrors(errors)
+    if (Object.keys(errors).length > 0) {
+      setError('입력값을 확인해주세요.')
       return
     }
 
     try {
       setLoading(true)
       setError('')
+      setFieldErrors({})
 
       const newPost = await createPost(
         {
@@ -57,11 +74,12 @@ export default function Page() {
       if (newPost) {
         router.push(`/posts/${newPost.id}`)
       } else {
-        setError('포스트 생성에 실패했습니다.')
+        console.error('createPost returned null')
+        setError(MESSAGES.UNKNOWN)
       }
     } catch (err) {
       console.error('포스트 생성 오류:', err)
-      setError('포스트 생성 중 오류가 발생했습니다.')
+      setError(serverErrorToUserMessage(err))
     } finally {
       setLoading(false)
     }
@@ -97,7 +115,12 @@ export default function Page() {
                 placeholder="포스트 제목을 입력하세요"
                 disabled={loading}
                 required
+                aria-invalid={!!fieldErrors.title}
+                className={fieldErrors.title ? 'border-red-500' : ''}
               />
+              {fieldErrors.title && (
+                <p className="mt-1 text-sm text-red-600" role="alert" aria-live="polite">{fieldErrors.title}</p>
+              )}
             </div>
 
             {/* 작성자 입력 */}
@@ -114,7 +137,12 @@ export default function Page() {
                 placeholder="작성자 이름을 입력하세요"
                 disabled={loading}
                 required
+                aria-invalid={!!fieldErrors.author}
+                className={fieldErrors.author ? 'border-red-500' : ''}
               />
+              {fieldErrors.author && (
+                <p className="mt-1 text-sm text-red-600" role="alert" aria-live="polite">{fieldErrors.author}</p>
+              )}
             </div>
 
             {/* 내용 입력 */}
@@ -132,7 +160,12 @@ export default function Page() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={loading}
                 required
+                aria-invalid={!!fieldErrors.content}
+                aria-describedby={fieldErrors.content ? 'content-error' : undefined}
               />
+              {fieldErrors.content && (
+                <p id="content-error" className="mt-1 text-sm text-red-600" role="alert" aria-live="polite">{fieldErrors.content}</p>
+              )}
             </div>
 
             {/* 버튼 영역 */}

@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
-  const [isSignUp, setIsSignUp] = useState(false)
+  const [isSignUp] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -38,14 +38,12 @@ export default function LoginPage() {
       if (isSignUp) {
         await signUp(email, password)
         setMessage('회원가입이 완료되었습니다! 로그인해주세요.')
-        setIsSignUp(false)
-        setPassword('')
       } else {
         await signIn(email, password)
         router.push('/posts')
       }
     } catch (err) {
-      console.error('login error catch:', err)
+      console.error('signup error catch:', err)
       setError(mapErrorMessage(err))
     } finally {
       setLoading(false)
@@ -56,9 +54,7 @@ export default function LoginPage() {
     <div className="max-w-md mx-auto py-16 px-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl text-center">
-            {isSignUp ? '회원가입' : '로그인'}
-          </CardTitle>
+          <CardTitle className="text-2xl text-center">회원가입</CardTitle>
         </CardHeader>
         <CardContent>
           {error && (
@@ -106,38 +102,9 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading
-                ? (isSignUp ? '가입 중...' : '로그인 중...')
-                : (isSignUp ? '회원가입' : '로그인')
-              }
+              {loading ? '가입 중...' : '회원가입'}
             </Button>
           </form>
-
-          <div className="mt-4 text-center text-sm text-gray-600">
-            {isSignUp ? (
-              <>
-                이미 계정이 있으신가요?{' '}
-                <button
-                  type="button"
-                  onClick={() => { setIsSignUp(false); setError(''); setMessage('') }}
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  로그인
-                </button>
-              </>
-            ) : (
-              <>
-                계정이 없으신가요?{' '}
-                <button
-                  type="button"
-                  onClick={() => { setIsSignUp(true); setError(''); setMessage('') }}
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  회원가입
-                </button>
-              </>
-            )}
-          </div>
         </CardContent>
       </Card>
     </div>

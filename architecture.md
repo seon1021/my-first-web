@@ -398,6 +398,39 @@ interface User {
 - PostCard: 호버 상태
 - PostSidebar: 삭제 Dialog 상태
 - 글 작성/수정: 폼 데이터, 로딩 상태
+
+---
+
+## 7. Error & UX Improvements (Ch12)
+
+### 7.1 추가된 파일
+- `app/loading.tsx` — 루트 로딩 스켈레톤
+- `app/error.tsx` — 루트 에러 바운더리 (친절한 메시지 + 재시도/새로고침)
+- `app/posts/loading.tsx`, `app/posts/[id]/loading.tsx` — 세그먼트별 로딩 스켈레톤
+- `lib/error-message.ts` — Supabase/네트워크 에러를 사용자 메시지로 변환하는 유틸
+- `lib/messages.ts` — 공통 메시지 상수
+
+### 7.2 화면별 상태 정책
+- 루트(`/`): 로딩 → `app/loading.tsx`, 에러 → `app/error.tsx`
+- 글 목록(`/posts`): 로딩 → `app/posts/loading.tsx`, 빈 목록 → 안내 문구, 에러 → 사용자용 메시지(콘솔에 원문 로그)
+- 글 상세(`/posts/[id]`): 로딩 → `app/posts/[id]/loading.tsx`, 글 없음 → '게시글을 찾을 수 없습니다' 안내, 에러 → 사용자용 메시지
+- 글 작성(`/posts/new`): 입력 검증, 제출 중 로딩/버튼 비활성화, 필드별 에러 표시, 서버 에러는 `lib/error-message.ts`로 매핑하여 표시
+- 로그인/회원가입: Supabase 에러를 `lib/error-message.ts`로 매핑해 사용자에게 친절한 메시지 표시
+
+### 7.3 폼 검증 규칙 (요약)
+- 제목: 필수, 최소 2자
+- 내용: 필수, 최소 10자
+- 작성자(작성자명): 필수
+- 제출 중에는 제출 버튼을 비활성화하여 중복 제출을 방지
+- 필드별 에러는 입력 아래에 표시하고 ARIA 속성(`aria-invalid`, `aria-describedby`)을 사용
+
+### 7.4 에러 메시지 매핑 규칙 (`lib/error-message.ts`)
+- `42501` 또는 `row-level security` 또는 `permission denied` → "이 작업을 수행할 권한이 없습니다."
+- `Failed to fetch` 또는 네트워크 관련 → "인터넷 연결을 확인해주세요."
+- `not found` 계열(404, no rows) → "요청한 게시글을 찾을 수 없습니다."
+- 그 외 기본 → "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+
+이 섹션은 사용자 경험을 일관되게 만들기 위해 에러 처리 및 로딩 UX 가이드를 프로젝트 문서에 반영한 것입니다.
 - 로그인/회원가입: 폼 데이터, 에러 메시지
 
 #### Server Components (상태 불필요)
