@@ -21,6 +21,7 @@ export default function Page() {
     content: '',
     author: '',
   })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   // 로그인 사용자의 이메일을 작성자 기본값으로 설정
   useEffect(() => {
@@ -33,6 +34,11 @@ export default function Page() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null
+    setSelectedFile(file)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,11 +68,23 @@ export default function Page() {
       setError('')
       setFieldErrors({})
 
+      // 이미지 업로드(선택된 파일이 있고 서버 저장 가능할 때)
+      let imageUrl: string | undefined
+      if (selectedFile && user) {
+        try {
+          const uploaded = await (await import('@/lib/storage')).uploadPostImage(selectedFile, String(Date.now()))
+          if (uploaded) imageUrl = uploaded
+        } catch (err) {
+          console.error('이미지 업로드 실패:', err)
+        }
+      }
+
       const newPost = await createPost(
         {
           title: formData.title,
           content: formData.content,
           author: formData.author,
+          image_url: imageUrl,
         },
         user?.id
       )
@@ -169,6 +187,22 @@ export default function Page() {
             </div>
 
             {/* 버튼 영역 */}
+            {/* 이미지 업로드 (선택) */}
+            <div>
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">첨부 이미지 (선택)</label>
+              <input
+                id="image"
+                name="image"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                disabled={loading}
+                className="block w-full text-sm text-gray-600"
+              />
+              {selectedFile && (
+                <p className="mt-2 text-sm text-muted-foreground">선택: {selectedFile.name}</p>
+              )}
+            </div>
             <div className="flex gap-4">
               <Button type="submit" disabled={loading}>
                 {loading ? '작성 중...' : '포스트 작성'}

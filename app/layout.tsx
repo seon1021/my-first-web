@@ -3,6 +3,7 @@ import "./globals.css";
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import AuthProvider from './components/AuthProvider'
+import ThemeProvider from '@/lib/ThemeContext'
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
@@ -21,13 +22,15 @@ export default function RootLayout({
   return (
     <html lang="ko" className={cn("font-sans", geist.variable)}>
       <body className="bg-white min-h-screen flex flex-col">
-        <AuthProvider>
-          <Nav />
-          <main className="flex-1 max-w-4xl mx-auto w-full">
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <Nav />
+            <main className="flex-1 max-w-4xl mx-auto w-full">
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

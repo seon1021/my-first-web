@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from './AuthProvider'
 import { signOut } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export default function Nav() {
   const { user, loading } = useAuth()
@@ -26,6 +27,7 @@ export default function Nav() {
         <div className="space-x-4 flex items-center">
           <Link href="/" className="text-sm hover:underline">홈</Link>
           <Link href="/posts" className="text-sm hover:underline">포스트</Link>
+          <ThemeToggle />
 
           {!loading && (
             <div className="flex items-center gap-3 ml-2 border-l border-gray-600 pl-3">

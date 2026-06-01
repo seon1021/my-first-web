@@ -13,7 +13,7 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   // 보호 대상 경로만 처리
-  const isProtected = pathname === '/posts/new' || pathname.endsWith('/edit') && pathname.startsWith('/posts/')
+  const isProtected = pathname === '/posts/new'
   if (!isProtected) return NextResponse.next()
 
   // Supabase에서 브라우저 세션을 쿠키에 저장하는 경우 보통 `sb-access-token` 쿠키를 사용합니다.
@@ -31,5 +31,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/posts/new', '/posts/:path*/edit'],
+  matcher: ['/posts/new'],
 }

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '../components/AuthProvider'
 import { getPostsByUser, deletePost as deletePostApi, type Post } from '@/lib/posts'
+import { getProfile, updateProfileAvatar, type Profile } from '@/lib/profiles'
+import { uploadAvatarFile } from '@/lib/storage'
 import PostCard from '../components/PostCard'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,7 +21,9 @@ export default function MyPage() {
   const router = useRouter()
   
   const [posts, setPosts] = useState<Post[]>([])
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [avatarUploading, setAvatarUploading] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -34,8 +38,19 @@ export default function MyPage() {
   useEffect(() => {
     if (user) {
       loadMyPosts()
+      loadProfile()
     }
   }, [user])
+
+  async function loadProfile() {
+    if (!user) return
+    try {
+      const p = await getProfile(user.id)
+      setProfile(p)
+    } catch (err) {
+      console.error('프로필 로드 실패:', err)
+    }
+  }
 
   async function loadMyPosts() {
     if (!user) return
@@ -95,6 +110,49 @@ export default function MyPage() {
         <p className="text-muted-foreground">
           <span className="font-medium text-foreground">{user.email}</span> 님, 환영합니다.
         </p>
+      </div>
+
+      <div className="mb-8 flex items-center gap-4">
+        <div>
+          <img
+            src={profile?.avatar_url || '/default-avatar.png'}
+            alt="avatar"
+            className="w-20 h-20 rounded-full object-cover border border-border"
+          />
+        </div>
+        <div>
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+                if (!user) return
+                try {
+                  setAvatarUploading(true)
+                  const publicUrl = await uploadAvatarFile(file, user.id)
+                  if (publicUrl) {
+                    const ok = await updateProfileAvatar(user.id, publicUrl)
+                    if (ok) {
+                      await loadProfile()
+                    } else {
+                      alert('프로필 업데이트 실패')
+                    }
+                  } else {
+                    alert('업로드 실패')
+                  }
+                } catch (err) {
+                  console.error('아바타 업로드 실패:', err)
+                  alert('업로드 중 오류가 발생했습니다.')
+                } finally {
+                  setAvatarUploading(false)
+                }
+              }}
+            />
+            <Button size="sm">{avatarUploading ? '업로드 중...' : '아바타 업로드'}</Button>
+          </label>
+        </div>
       </div>
 
       <div className="mb-6 flex items-center justify-between">

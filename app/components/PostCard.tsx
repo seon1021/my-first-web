@@ -1,20 +1,67 @@
+"use client"
+
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Post } from '@/lib/posts'
+import { useAuth } from './AuthProvider'
+import { getLikesCount, hasUserLiked, toggleLike, isLikesAvailable } from '@/lib/likes'
+import { Button } from '@/components/ui/button'
 
 interface PostCardProps {
   post: Post
 }
 
-/**
- * 메인 페이지의 글 카드
- * 글 목록에서 반복되는 컴포넌트
- * 제목, 작성일, 미리보기 내용 표시
- */
 export default function PostCard({ post }: PostCardProps) {
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return '날짜 없음'
     return new Date(dateString).toLocaleDateString('ko-KR')
+  }
+
+  const { user } = useAuth()
+  const [likes, setLikes] = useState<number>(0)
+  const [liked, setLiked] = useState<boolean>(false)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    let mounted = true
+    async function load() {
+      try {
+        const id = String((post as any).id)
+        const c = await getLikesCount(id)
+        if (mounted) setLikes(c)
+
+        if (user) {
+          const h = await hasUserLiked(id, String(user.id))
+          if (mounted) setLiked(h)
+        }
+      } catch (err) {
+        console.error('load likes error:', err)
+      }
+    }
+    load()
+    return () => { mounted = false }
+  }, [post, user])
+
+  async function onToggle(e: React.MouseEvent) {
+    e.preventDefault()
+    if (!user) {
+      window.location.href = `/login?next=/posts/${(post as any).id}`
+      return
+    }
+
+    if (busy) return
+    setBusy(true)
+    const id = String((post as any).id)
+    const res = await toggleLike(id, String(user.id))
+    if (res) {
+      setLiked(res.liked)
+      setLikes(res.count)
+    } else {
+      console.error('toggleLike returned null for', { postId: id, userId: user.id })
+      alert('좋아요 처리에 실패했습니다. 콘솔을 확인하세요.')
+    }
+    setBusy(false)
   }
 
   return (
@@ -29,9 +76,20 @@ export default function PostCard({ post }: PostCardProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-foreground line-clamp-3">
-            {post.content}
-          </p>
+          <p className="text-foreground line-clamp-3">{post.content}</p>
+
+          <div className="mt-4 flex items-center gap-2">
+            {!isLikesAvailable() ? (
+              <div className="text-sm text-muted-foreground">좋아요 기능이 비활성화되었습니다. Supabase 마이그레이션을 적용하세요.</div>
+            ) : (
+              <>
+                <Button size="sm" variant={liked ? 'destructive' : 'outline'} onClick={onToggle}>
+                  {liked ? '♥ 좋아요' : '♡ 좋아요'}
+                </Button>
+                <span className="text-sm text-muted-foreground">{likes}명이 좋아합니다</span>
+              </>
+            )}
+          </div>
         </CardContent>
       </Card>
     </Link>
