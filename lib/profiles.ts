@@ -12,11 +12,18 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     .from('profiles')
     .select('*')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
 
   if (error) {
-    console.error('getProfile error:', error)
+    console.error('getProfile error:', JSON.stringify(error))
     return null
+  }
+
+  if (!data) {
+    // 프로필이 없는 경우 Server Action을 호출하여 서비스 권한(RLS 우회)으로 강제 생성합니다.
+    const { createProfileOnServer } = await import('@/app/actions/profile')
+    const newProfile = await createProfileOnServer(userId)
+    return newProfile
   }
 
   return data

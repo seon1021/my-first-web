@@ -76,6 +76,11 @@ export default function PostCard({ post }: PostCardProps) {
           </div>
         </CardHeader>
         <CardContent>
+          {post.image_url && (
+            <div className="mb-3">
+              <img src={post.image_url} alt="post thumbnail" className="w-full h-40 object-cover rounded-md" />
+            </div>
+          )}
           <p className="text-foreground line-clamp-3">{post.content}</p>
 
           <div className="mt-4 flex items-center gap-2">

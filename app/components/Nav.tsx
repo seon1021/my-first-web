@@ -21,7 +21,7 @@ export default function Nav() {
   }
 
   return (
-    <nav className="bg-gray-800 text-white">
+    <nav className="bg-foreground text-background transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="text-lg font-semibold">내 블로그</Link>
         <div className="space-x-4 flex items-center">
@@ -30,7 +30,7 @@ export default function Nav() {
           <ThemeToggle />
 
           {!loading && (
-            <div className="flex items-center gap-3 ml-2 border-l border-gray-600 pl-3">
+            <div className="flex items-center gap-3 ml-2 border-l border-background/20 pl-3">
               {user ? (
                 <>
                   <Link
@@ -41,15 +41,15 @@ export default function Nav() {
                   </Link>
                   <Link 
                     href="/mypage"
-                    className="text-sm text-gray-300 hover:text-white transition font-medium hidden sm:inline px-2 py-1"
+                    className="text-sm text-background/80 hover:text-background transition font-medium hidden sm:inline px-2 py-1"
                   >
-                    {user.email}
+                    마이페이지
                   </Link>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={handleSignOut}
-                    className="text-xs border-gray-500 text-gray-300 hover:text-white hover:bg-gray-700 bg-transparent h-8"
+                    className="text-xs border-background/50 text-background/80 hover:text-background hover:bg-background/10 bg-transparent h-8"
                   >
                     로그아웃
                   </Button>

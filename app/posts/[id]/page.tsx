@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: any }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* 본문 영역 (2/3) */}
         <div className="md:col-span-2">
-          <PostContent content={post.content} />
+          <PostContent content={post.content} imageUrl={(post as any).image_url} />
           
           {/* 댓글 영역 */}
           <CommentSection postId={post.id} />
